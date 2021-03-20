@@ -7,8 +7,8 @@ let package = Package(
     .library(name: "StencilSwiftKit", targets: ["StencilSwiftKit"])
   ],
   dependencies: [
-    .package(url: "https://github.com/shibapm/Komondor.git", from: "1.0.0"),
-    .package(url: "https://github.com/stencilproject/Stencil.git", .upToNextMajor(from: "0.14.0"))
+    // .package(url: "https://github.com/shibapm/Komondor.git", from: "1.0.0"),
+    .package(url: "https://github.com/HeMet/Stencil.git", .branch("win-support"))
   ],
   targets: [
     .target(name: "StencilSwiftKit", dependencies: [
@@ -21,7 +21,7 @@ let package = Package(
   swiftLanguageVersions: [.v5]
 )
 
-#if canImport(PackageConfig)
+#if canImport(PackageConfig) && !os(Windows)
 import PackageConfig
 
 let config = PackageConfiguration([
