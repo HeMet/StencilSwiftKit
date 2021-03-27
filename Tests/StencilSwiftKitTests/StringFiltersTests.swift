@@ -486,13 +486,15 @@ extension StringFiltersTests {
 
 extension StringFiltersTests {
   func testBasename() throws {
-    let expectations: [Input: String] = [
+    var expectations: [Input: String] = [
       Input(string: "/tmp/scratch.tiff"): "scratch.tiff",
       Input(string: "/tmp/scratch"): "scratch",
       Input(string: "/tmp/"): "tmp",
-      Input(string: "scratch///"): "scratch",
-      Input(string: "/"): "/"
+      Input(string: "scratch///"): "scratch"
     ]
+    #if !os(Windows)
+      expectations[Input(string: "/")] = "/"
+    #endif
 
     for (input, expected) in expectations {
       let result = try Filters.Strings.basename(input) as? String
@@ -503,14 +505,17 @@ extension StringFiltersTests {
 
 extension StringFiltersTests {
   func testDirname() throws {
-    let expectations: [Input: String] = [
+    var expectations: [Input: String] = [
       Input(string: "/tmp/scratch.tiff"): "/tmp",
       Input(string: "/tmp/lock/"): "/tmp",
       Input(string: "/tmp/"): "/",
       Input(string: "/tmp"): "/",
-      Input(string: "/"): "/",
       Input(string: "scratch.tiff"): "."
     ]
+
+    #if !os(Windows)
+      expectations[Input(string: "/")] = "/"
+    #endif
 
     for (input, expected) in expectations {
       let result = try Filters.Strings.dirname(input) as? String
