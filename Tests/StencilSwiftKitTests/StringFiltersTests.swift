@@ -505,16 +505,23 @@ extension StringFiltersTests {
 
 extension StringFiltersTests {
   func testDirname() throws {
-    var expectations: [Input: String] = [
+    #if os(Windows)
+    let expectations: [Input: String] = [
+      Input(string: "C:/tmp/scratch.tiff"): "C:/tmp",
+      Input(string: "C:/tmp/lock/"): "C:/tmp",
+      Input(string: "C:/tmp/"): "C:",
+      Input(string: "C:/tmp"): "C:",
+      Input(string: "scratch.tiff"): "."
+    ]
+    #else
+    let expectations: [Input: String] = [
       Input(string: "/tmp/scratch.tiff"): "/tmp",
       Input(string: "/tmp/lock/"): "/tmp",
       Input(string: "/tmp/"): "/",
       Input(string: "/tmp"): "/",
+      Input(string: "/"): "/",
       Input(string: "scratch.tiff"): "."
     ]
-
-    #if !os(Windows)
-      expectations[Input(string: "/")] = "/"
     #endif
 
     for (input, expected) in expectations {
