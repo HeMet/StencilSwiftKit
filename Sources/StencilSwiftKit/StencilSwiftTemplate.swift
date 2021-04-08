@@ -13,10 +13,20 @@ typealias NSRegularExpression = RegularExpression
 
 // Workaround until Stencil fixes https://github.com/stencilproject/Stencil/issues/22
 open class StencilSwiftTemplate: Template {
+  #if os(Windows)
+  // line terminator
+  private let lt: Character = "\r\n"
+  // escaped line terminator
+  private let elt = "\\r\\n"
+  #else
+  private let lt: Character = "\n"
+  private let elt = "\\n"
+  #endif
+
   public required init(templateString: String, environment: Environment? = nil, name: String? = nil) {
     let templateStringWithMarkedNewlines = templateString
-      .replacingOccurrences(of: "\n\n", with: "\n\u{000b}\n")
-      .replacingOccurrences(of: "\n\n", with: "\n\u{000b}\n")
+      .replacingOccurrences(of: "\(lt)\(lt)", with: "\(lt)\u{000b}\(lt)")
+      .replacingOccurrences(of: "\(lt)\(lt)", with: "\(lt)\u{000b}\(lt)")
     super.init(templateString: templateStringWithMarkedNewlines, environment: environment, name: name)
   }
 
@@ -29,7 +39,7 @@ open class StencilSwiftTemplate: Template {
   private func removeExtraLines(from str: String) -> String {
     let extraLinesRE: NSRegularExpression = {
       do {
-        return try NSRegularExpression(pattern: "\\n([ \\t]*\\n)+", options: [])
+        return try NSRegularExpression(pattern: "\(elt)([ \\t]*\(elt))+", options: [])
       } catch {
         fatalError("Regular Expression pattern error: \(error)")
       }
@@ -41,8 +51,8 @@ open class StencilSwiftTemplate: Template {
       withTemplate: "\n"
     )
     let unmarkedNewlines = compact
-      .replacingOccurrences(of: "\n\u{000b}\n", with: "\n\n")
-      .replacingOccurrences(of: "\n\u{000b}\n", with: "\n\n")
+      .replacingOccurrences(of: "\(lt)\u{000b}\(lt)", with: "\(lt)\(lt)")
+      .replacingOccurrences(of: "\(lt)\u{000b}\(lt)", with: "\(lt)\(lt)")
     return unmarkedNewlines
   }
 }
