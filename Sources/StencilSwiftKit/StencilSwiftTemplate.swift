@@ -48,7 +48,7 @@ open class StencilSwiftTemplate: Template {
       in: str,
       options: [],
       range: NSRange(location: 0, length: str.utf16.count),
-      withTemplate: "\n"
+      withTemplate: "\(lt)"
     )
     let unmarkedNewlines = compact
       .replacingOccurrences(of: "\(lt)\u{000b}\(lt)", with: "\(lt)\(lt)")
